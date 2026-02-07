@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Roblox 數學大冒險</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .game-container {
+            background: linear-gradient(180deg, #00d4ff 0%, #0099cc 100%);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.4),
+                inset 0 -5px 20px rgba(0,0,0,0.2),
+                0 0 0 8px #ffd700,
+                0 0 0 16px #ff6b35;
+            max-width: 700px;
+            width: 95%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 
+                3px 3px 0 #ff6b35,
+                6px 6px 0 #ffd700;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .score-item {
+            background: linear-gradient(180deg, #ffd700, #ffaa00);
+            padding: 15px 30px;
+            border-radius: 20px;
+            box-shadow: 
+                0 6px 0 #cc8800,
+                0 10px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            transform: rotate(-2deg);
+        }
+        
+        .score-item:last-child {
+            transform: rotate(2deg);
+        }
+        
+        .score-label {
+            font-size: 0.9em;
+            color: #664400;
+            font-weight: 700;
+        }
+        
+        .score-value {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 2px 2px 0 #cc8800;
+        }
+        
+        .settings {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .setting-label {
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+            transform: translateY(0);
+        }
+        
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(180deg, #00d4ff, #0099cc);
+            color: #fff;
+        }
+        
+        .btn-success {
+            background: linear-gradient(180deg, #00ff88, #00cc66);
+            color: #fff;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(180deg, #ffd700, #ffaa00);
+            color: #664400;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(180deg, #ff6b6b, #ee5555);
+            color: #fff;
+        }
+        
+        .btn-game {
+            background: linear-gradient(180deg, #ff6b35, #dd5525);
+            color: #fff;
+            font-size: 1.3em;
+            padding: 18px 40px;
+        }
+        
+        .btn-hint {
+            background: linear-gradient(180deg, #a855f7, #7c3aed);
+            color: #fff;
+        }
+        
+        .problem-area {
+            background: linear-gradient(180deg, #f8f8f8, #e8e8e8);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .problem-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3em;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .input-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .input-box {
+            width: 150px;
+            height: 70px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2em;
+            text-align: center;
+            border: 4px solid #00d4ff;
+            border-radius: 15px;
+            background: #fff;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .input-box:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 20px rgba(255,107,53,0.3);
+        }
+        
+        .input-box.correct {
+            border-color: #00ff88;
+            background: #e8fff5;
+            animation: correctAnim 0.5s ease;
+        }
+        
+        .input-box.wrong {
+            border-color: #ff6b6b;
+            background: #fff0f0;
+            animation: wrongAnim 0.5s ease;
+        }
+        
+        @keyframes correctAnim {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes wrongAnim {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .operator {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5em;
+            color: #ff6b35;
+        }
+        
+        .hint-area {
+            background: linear-gradient(180deg, #a855f7, #7c3aed);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hint-title {
+            font-family: 'Fredoka One', cursive;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hint-content {
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 15px;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1000;
+        }
+        
+        .particle {
+            position: absolute;
+            font-size: 2em;
+            animation: fall 3s linear forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fall {
+            0% { opacity: 1; transform: translateY(-50px) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .confetti {
+            width: 15px;
+            height: 15px;
+            background: #ffd700;
+            animation: confettiFall 2s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Fredoka One', cursive;
+            font-size: 4em;
+            color: #ffd700;
+            text-shadow: 
+                4px 4px 0 #ff6b35,
+                8px 8px 0 #ff0000;
+            animation: levelUp 2s ease forwards;
+            z-index: 2000;
+            pointer-events: none;
+        }
+        
+        @keyframes levelUp {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1500;
+            display: none;
+        }
+        
+        .star {
+            position: absolute;
+            font-size: 3em;
+            animation: starBurst 1s ease forwards;
+        }
+        
+        @keyframes starBurst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,255,136,0.5);
+        }
+        
+        .level-info {
+            text-align: center;
+            margin-bottom: 10px;
+            font-family: 'Fredoka One', cursive;
+            color: #fff;
+            font-size: 1.2em;
+        }
+        
+        .streak-badge {
+            background: linear-gradient(180deg, #ff6b35, #dd5525);
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="stars" id="stars"></div>
+    
+    <div class="game-container">
+        <div class="header">
+            <h1 class="title">🎮 數學大冒險 🎮</h1>
+            <div class="streak-badge">
+                <span>🔥</span>
+                <span id="streak">0</span> 連勝
+            </div>
+        </div>
+        
+        <div class="level-info">
+            🏆 等級 <span id="level">1</span> | 經驗值 <span id="xp">0</span>/<span id="xpNeeded">100</span>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">⭐ 分數</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">✅ 正確</div>
+                <div class="score-value" id="correct">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">❌ 錯誤</div>
+                <div class="score-value" id="wrong">0</div>
+            </div>
+        </div>
+        
+        <div class="settings">
+            <div class="setting-row">
+                <div class="setting-label">🔢 數字位數：</div>
+                <div class="btn-group" id="digitBtns">
+                    <button class="btn btn-primary" data-digit="2">2位數</button>
+                    <button class="btn btn-primary" data-digit="3">3位數</button>
+                    <button class="btn btn-primary active" data-digit="4">4位數</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label">🎯 輸入項目：</div>
+                <div class="btn-group" id="inputBtns">
+                    <button class="btn btn-success" data-input="result">求結果</button>
+                    <button class="btn btn-success" data-input="a">求被加/減數</button>
+                    <button class="btn btn-success" data-input="b">求加/減數</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <button class="btn btn-game" onclick="startGame()">🚀 開始挑戰！</button>
+            </div>
+        </div>
+        
+        <div class="problem-area" id="problemArea" style="display: none;">
+            <div class="problem-number" id="problem"></div>
+            <div class="input-area">
+                <input type="number" class="input-box" id="answer" placeholder="?" onkeypress="handleKeyPress(event)">
+                <button class="btn btn-success" onclick="checkAnswer()">✅ 確定</button>
+                <button class="btn btn-hint" onclick="showHint()">💡 提示</button>
+            </div>
+            <div class="hint-area" id="hintArea">
+                <div class="hint-title">💡 提示</div>
+                <div class="hint-content" id="hintContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="level-up" id="levelUp" style="display: none;">⬆️ 升級！</div>
+    
+    <script>
+        // Game State
+        let gameState = {
+            digit: 4,
+            inputType: 'result', // 'result', 'a', 'b'
+            score: 0,
+            correct: 0,
+            wrong: 0,
+            streak: 0,
+            xp: 0,
+            level: 1,
+            currentProblem: null
+        };
+        
+        // Sound Effects
+        const sounds = {
+            correct: null,
+            wrong: null,
+            click: null,
+            levelUp: null,
+            streak: null
+        };
+        
+        // Initialize Audio
+        function initAudio() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const ctx = new AudioContext();
+            
+            sounds.correct = () => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            };
+            
+            sounds.wrong = () => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, ctx.currentTime);
+                osc.frequency.setValueAtTime(150, ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            };
+            
+            sounds.click = () => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.1);
+            };
+            
+            sounds.levelUp = () => {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.3);
+                    osc.start(ctx.currentTime + i * 0.15);
+                    osc.stop(ctx.currentTime + i * 0.15 + 0.3);
+                });
+            };
+            
+            sounds.streak = () => {
+                const notes = [880, 1108.73, 1318.51];
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.1);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.1 + 0.2);
+                    osc.start(ctx.currentTime + i * 0.1);
+                    osc.stop(ctx.currentTime + i * 0.1 + 0.2);
+                });
+            };
+        }
+        
+        // Digit Buttons
+        document.getElementById('digitBtns').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn')) {
+                document.querySelectorAll('#digitBtns .btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                gameState.digit = parseInt(e.target.dataset.digit);
+                playSound('click');
+            }
+        });
+        
+        // Input Type Buttons
+        document.getElementById('inputBtns').addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn')) {
+                document.querySelectorAll('#inputBtns .btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                gameState.inputType = e.target.dataset.input;
+                playSound('click');
+            }
+        });
+        
+        function playSound(type) {
+            if (sounds[type]) sounds[type]();
+        }
+        
+        function startGame() {
+            document.getElementById('problemArea').style.display = 'block';
+            playSound('click');
+            generateProblem();
+        }
+        
+        function generateProblem() {
+            const digit = gameState.digit;
+            const min = Math.pow(10, digit - 1);
+            const max = Math.pow(10, digit) - 1;
+            
+            const a = Math.floor(Math.random() * (max - min + 1)) + min;
+            const b = Math.floor(Math.random() * (max - min + 1)) + min;
+            const isAdd = Math.random() > 0.5;
+            
+            if (isAdd) {
+                gameState.currentProblem = {
+                    type: 'add',
+                    a: a,
+                    b: b,
+                    result: a + b
+                };
+            } else {
+                if (a < b) {
+                    gameState.currentProblem = {
+                        type: 'sub',
+                        a: b,
+                        b: a,
+                        result: b - a
+                    };
+                } else {
+                    gameState.currentProblem = {
+                        type: 'sub',
+                        a: a,
+                        b: b,
+                        result: a - b
+                    };
+                }
+            }
+            
+            displayProblem();
+            document.getElementById('hintArea').style.display = 'none';
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').focus();
+        }
+        
+        function displayProblem() {
+            const p = gameState.currentProblem;
+            let display = '';
+            
+            if (gameState.inputType === 'result') {
+                display = `${p.a} ${p.type === 'add' ? '+' : '-'} ${p.b} = ?`;
+            } else if (gameState.inputType === 'a') {
+                display = `? ${p.type === 'add' ? '+' : '-'} ${p.b} = ${p.result}`;
+            } else {
+                display = `${p.a} ${p.type === 'add' ? '+' : '-'} ? = ${p.result}`;
+            }
+            
+            document.getElementById('problem').textContent = display;
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        }
+        
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const correctAnswer = gameState.currentProblem.result;
+            const inputBox = document.getElementById('answer');
+            
+            if (userAnswer === correctAnswer) {
+                inputBox.classList.add('correct');
+                playSound('correct');
+                createParticles('⭐');
+                createConfetti();
+                
+                gameState.score += 10 + gameState.streak * 2;
+                gameState.correct++;
+                gameState.streak++;
+                gameState.xp += 10 + Math.floor(gameState.streak / 3) * 5;
+                
+                // Level up check
+                const xpNeeded = gameState.level * 100;
+                if (gameState.xp >= xpNeeded) {
+                    gameState.level++;
+                    gameState.xp -= xpNeeded;
+                    showLevelUp();
+                    playSound('levelUp');
+                    createStarBurst();
+                }
+                
+                if (gameState.streak >= 3) {
+                    playSound('streak');
+                }
+                
+                setTimeout(() => {
+                    inputBox.classList.remove('correct');
+                    generateProblem();
+                }, 1000);
+            } else {
+                inputBox.classList.add('wrong');
+                playSound('wrong');
+                gameState.wrong++;
+                gameState.streak = 0;
+                createParticles('❌');
+                
+                setTimeout(() => {
+                    inputBox.classList.remove('wrong');
+                }, 500);
+            }
+            
+            updateDisplay();
+        }
+        
+        function showHint() {
+            const p = gameState.currentProblem;
+            let hint = '';
+            
+            if (gameState.inputType === 'result') {
+                if (p.type === 'add') {
+                    hint = `加法提示：\n${p.a} + ${p.b}\n可以試吓由 ${p.a} 開始，向上數 ${p.b} 步`;
+                } else {
+                    hint = `減法提示：\n${p.a} - ${p.b}\n可以試吓由 ${p.a} 開始，向下數 ${p.b} 步`;
+                }
+            } else if (gameState.inputType === 'a') {
+                if (p.type === 'add') {
+                    hint = `求被加數：\n結果 ${p.result} - 加數 ${p.b} = 被加數\n即係 ${p.result} - ${p.b} = ${p.a}`;
+                } else {
+                    hint = `求被減數：\n結果 ${p.result} + 減數 ${p.b} = 被減數\n即係 ${p.result} + ${p.b} = ${p.a}`;
+                }
+            } else {
+                if (p.type === 'add') {
+                    hint = `求加數：\n結果 ${p.result} - 被加數 ${p.a} = 加數\n即係 ${p.result} - ${p.a} = ${p.b}`;
+                } else {
+                    hint = `求減數：\n被減數 ${p.a} - 結果 ${p.result} = 減數\n即係 ${p.a} - ${p.result} = ${p.b}`;
+                }
+            }
+            
+            document.getElementById('hintContent').textContent = hint;
+            document.getElementById('hintArea').style.display = 'block';
+            playSound('click');
+        }
+        
+        function updateDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('correct').textContent = gameState.correct;
+            document.getElementById('wrong').textContent = gameState.wrong;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('xp').textContent = gameState.xp;
+            document.getElementById('xpNeeded').textContent = gameState.level * 100;
+            document.getElementById('progressFill').style.width = `${(gameState.xp / (gameState.level * 100)) * 100}%`;
+        }
+        
+        function createParticles(emoji) {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emoji;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+        
+        function createConfetti() {
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+        
+        function showLevelUp() {
+            const levelUp = document.getElementById('levelUp');
+            levelUp.style.display = 'block';
+            setTimeout(() => levelUp.style.display = 'none', 2000);
+        }
+        
+        function createStarBurst() {
+            const stars = document.getElementById('stars');
+            stars.style.display = 'block';
+            const emojis = ['⭐', '🌟', '💫', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 0.5 + 's';
+                stars.appendChild(star);
+                setTimeout(() => star.remove(), 1000);
+            }
+            setTimeout(() => stars.style.display = 'none', 1500);
+        }
+        
+        // Initialize
+        initAudio();
+        updateDisplay();
+    </script>
+</body>
+</html>
