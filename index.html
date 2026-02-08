@@ -302,7 +302,11 @@
                 sounds.wrong && sounds.wrong();
                 gameState.wrong++; gameState.streak = 0;
                 createParticles('❌');
-                setTimeout(() => box.classList.remove('wrong'), 500);
+                updateDisplay();
+                setTimeout(() => {
+                    box.classList.remove('wrong');
+                    generateProblem();
+                }, 800);
             }
             updateDisplay();
         }
