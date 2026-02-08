@@ -339,6 +339,19 @@
             ['score', 'correct', 'wrong', 'streak', 'level', 'xp'].forEach(k => document.getElementById(k).textContent = gameState[k]);
             document.getElementById('xpNeeded').textContent = gameState.level * 100;
             document.getElementById('progressFill').style.width = `${(gameState.xp / (gameState.level * 100)) * 100}%`;
+            saveProgress();
+        }
+        
+        function saveProgress() {
+            localStorage.setItem('robloxMath_xp', gameState.xp);
+            localStorage.setItem('robloxMath_level', gameState.level);
+        }
+        
+        function loadProgress() {
+            const savedXp = localStorage.getItem('robloxMath_xp');
+            const savedLevel = localStorage.getItem('robloxMath_level');
+            if (savedXp !== null) gameState.xp = parseInt(savedXp);
+            if (savedLevel !== null) gameState.level = parseInt(savedLevel);
         }
         
         function createParticles(emoji) {
@@ -389,6 +402,7 @@
         }
         
         initAudio();
+        loadProgress();
         updateDisplay();
     </script>
 </body>
