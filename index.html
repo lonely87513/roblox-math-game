@@ -200,7 +200,10 @@
                 if (gameState.history.length > 5) gameState.history.pop();
                 updateHistoryDisplay();
             }
-            gameState.score = 0; gameState.correct = 0; gameState.wrong = 0; gameState.streak = 0; gameState.xp = 0; gameState.level = 1; gameState.startTime = Date.now();
+            // 保留 XP 和等級，只重置分數和連勝
+            const savedXp = gameState.xp;
+            const savedLevel = gameState.level;
+            gameState.score = 0; gameState.correct = 0; gameState.wrong = 0; gameState.streak = 0; gameState.xp = savedXp; gameState.level = savedLevel; gameState.startTime = Date.now();
             updateDisplay();
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             gameState.timerInterval = setInterval(updateTimer, 1000);
