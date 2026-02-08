@@ -351,13 +351,14 @@
         }
         
         function createConfetti() {
+            const container = document.getElementById('particles');
             for (let i = 0; i < 30; i++) {
                 const c = document.createElement('div');
                 c.className = 'confetti';
                 c.style.left = Math.random() * 100 + '%';
                 c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
                 c.style.animationDelay = Math.random() * 0.5 + 's';
-                document.body.appendChild(c);
+                container.appendChild(c);
                 setTimeout(() => c.remove(), 2000);
             }
         }
