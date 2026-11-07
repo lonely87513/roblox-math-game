@@ -290,18 +290,18 @@
             <div class="setting-row">
                 <div class="setting-label">🔢 數字位數：</div>
                 <div class="btn-group" id="digitBtns">
-                    <button class="btn btn-primary" data-digit="2">2位數</button>
-                    <button class="btn btn-primary" data-digit="3">3位數</button>
-                    <button class="btn btn-primary active" data-digit="4">4位數</button>
+                    <button class="btn btn-primary" data-digit="2" aria-pressed="false">2位數</button>
+                    <button class="btn btn-primary" data-digit="3" aria-pressed="false">3位數</button>
+                    <button class="btn btn-primary active" data-digit="4" aria-pressed="true">4位數</button>
                 </div>
             </div>
             <div class="setting-row">
                 <div class="setting-label">🎯 題目類型：</div>
                 <div class="btn-group" id="inputBtns">
-                    <button class="btn btn-success" data-input="result">求結果</button>
-                    <button class="btn btn-success" data-input="a">求被加/減數</button>
-                    <button class="btn btn-success" data-input="b">求加/減數</button>
-                    <button class="btn btn-random" data-input="random">🔀 隨機</button>
+                    <button class="btn btn-success" data-input="result" aria-pressed="false">求結果</button>
+                    <button class="btn btn-success" data-input="a" aria-pressed="false">求被加/減數</button>
+                    <button class="btn btn-success" data-input="b" aria-pressed="false">求加/減數</button>
+                    <button class="btn btn-random" data-input="random" aria-pressed="false">🔀 隨機</button>
                 </div>
             </div>
             <div class="setting-row"><button class="btn btn-game" onclick="startGame()">🚀 開始挑戰！</button></div>
@@ -310,8 +310,8 @@
             <div class="problem-number" id="problem" role="status" aria-live="polite"></div>
             <div class="input-area">
                 <input type="number" class="input-box" id="answer" placeholder="?" aria-label="答案" onkeypress="handleKeyPress(event)">
-                <button class="btn btn-success" data-action="confirm" onclick="checkAnswer()">✅ 確定</button>
-                <button class="btn btn-hint" data-action="hint" onclick="showHint()">💡 提示</button>
+                <button class="btn btn-success" onclick="checkAnswer()">✅ 確定</button>
+                <button class="btn btn-hint" onclick="showHint()">💡 提示</button>
             </div>
             <div class="keypad" id="keypad" role="group" aria-label="數字鍵盤">
                 <button type="button" class="key" data-key="1">1</button>
@@ -452,8 +452,9 @@
         
         document.getElementById('digitBtns').addEventListener('click', e => {
             if (e.target.classList.contains('btn')) {
-                document.querySelectorAll('#digitBtns .btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('#digitBtns .btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
                 e.target.classList.add('active');
+                e.target.setAttribute('aria-pressed', 'true');
                 gameState.digit = parseInt(e.target.dataset.digit);
                 sounds.click && sounds.click();
             }
@@ -461,8 +462,9 @@
         
         document.getElementById('inputBtns').addEventListener('click', e => {
             if (e.target.classList.contains('btn')) {
-                document.querySelectorAll('#inputBtns .btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('#inputBtns .btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
                 e.target.classList.add('active');
+                e.target.setAttribute('aria-pressed', 'true');
                 gameState.inputType = e.target.dataset.input;
                 sounds.click && sounds.click();
             }
