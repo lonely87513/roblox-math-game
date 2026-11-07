@@ -621,15 +621,25 @@
         }
         
         function saveProgress() {
-            localStorage.setItem('robloxMath_xp', gameState.xp);
-            localStorage.setItem('robloxMath_level', gameState.level);
+            try {
+                localStorage.setItem('robloxMath_xp', gameState.xp);
+                localStorage.setItem('robloxMath_level', gameState.level);
+            } catch (err) {
+                // 無痕模式、配額已滿或瀏覽器封鎖儲存時忽略寫入，遊戲仍然可以繼續進行
+            }
         }
         
         function loadProgress() {
-            const savedXp = localStorage.getItem('robloxMath_xp');
-            const savedLevel = localStorage.getItem('robloxMath_level');
-            if (savedXp !== null) gameState.xp = parseInt(savedXp);
-            if (savedLevel !== null) gameState.level = parseInt(savedLevel);
+            try {
+                const savedXp = localStorage.getItem('robloxMath_xp');
+                const savedLevel = localStorage.getItem('robloxMath_level');
+                const xp = parseInt(savedXp, 10);
+                const level = parseInt(savedLevel, 10);
+                if (savedXp !== null && Number.isFinite(xp) && xp >= 0) gameState.xp = xp;
+                if (savedLevel !== null && Number.isFinite(level) && level >= 1) gameState.level = level;
+            } catch (err) {
+                // 讀取失敗時以預設值開始
+            }
         }
         
         function createParticles(emoji) {
