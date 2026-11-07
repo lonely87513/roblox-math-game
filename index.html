@@ -610,6 +610,7 @@
 
         function checkAnswer() {
             if (gameState.answerLocked) return;
+            if (!gameState.currentProblem) return;
             const val = document.getElementById('answer').value.trim();
             const box = document.getElementById('answer');
             if (!val) {
@@ -620,7 +621,16 @@
                 setTimeout(() => { box.classList.remove('warning'); document.getElementById('hintArea').style.display = 'none'; }, 1000);
                 return;
             }
-            const num = parseInt(val);
+            if (!/^\d+$/.test(val)) {
+                // 只接受非負整數，避免小數或科學記號被 parseInt 截斷成另一個答案
+                box.classList.add('warning');
+                sounds.warning && sounds.warning();
+                document.getElementById('hintContent').textContent = '請輸入數字答案！';
+                document.getElementById('hintArea').style.display = 'block';
+                setTimeout(() => { box.classList.remove('warning'); document.getElementById('hintArea').style.display = 'none'; }, 1000);
+                return;
+            }
+            const num = parseInt(val, 10);
             if (num === gameState.currentProblem.result) {
                 box.classList.add('correct');
                 sounds.correct && sounds.correct();
@@ -653,6 +663,7 @@
         
         function showHint() {
             const p = gameState.currentProblem;
+            if (!p) return;
             let h = '';
             if (p.inputType === 'result') {
                 h = p.type === 'add' 
