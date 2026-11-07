@@ -415,6 +415,34 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
                 osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
             };
+            // 升級提示音：沿用相同音色與包絡的上行琶音
+            sounds.levelUp = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const start = ctx.currentTime + i * 0.12;
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(0.3, start);
+                    gain.gain.exponentialRampToValueAtTime(0.01, start + 0.3);
+                    osc.start(start); osc.stop(start + 0.3);
+                });
+            };
+            // 連勝提示音：兩音上行的短促提示
+            sounds.streak = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                [880.00, 1174.66].forEach((freq, i) => {
+                    const start = ctx.currentTime + i * 0.09;
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, start);
+                    gain.gain.setValueAtTime(0.25, start);
+                    gain.gain.exponentialRampToValueAtTime(0.01, start + 0.18);
+                    osc.start(start); osc.stop(start + 0.18);
+                });
+            };
         }
         
         // 第一次使用者互動時啟用音訊，之後每次互動都嘗試恢復被暫停的 AudioContext
