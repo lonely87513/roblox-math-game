@@ -482,6 +482,7 @@
             const savedLevel = gameState.level;
             gameState.score = 0; gameState.correct = 0; gameState.wrong = 0; gameState.streak = 0; gameState.xp = savedXp; gameState.level = savedLevel; gameState.startTime = Date.now();
             updateDisplay();
+            updateTimer();
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             gameState.timerInterval = setInterval(updateTimer, 1000);
             document.getElementById('problemArea').style.display = 'block';
