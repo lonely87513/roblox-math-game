@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>🎮 Roblox 數學大冒險</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -157,24 +157,25 @@
            ========================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { -webkit-text-size-adjust: 100%; }
-        body { font-family: var(--font-body); font-size: var(--fs-md); background: linear-gradient(135deg, var(--c-bg-top) 0%, var(--c-bg-mid) 50%, var(--c-bg-bottom) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        .game-container { background: linear-gradient(180deg, var(--c-shell-top) 0%, var(--c-shell-bottom) 100%); border-radius: var(--r-xl); padding: 30px; box-shadow: var(--shadow-3), 0 0 0 8px var(--c-ring-gold), 0 0 0 16px var(--c-ring-flame); max-width: 700px; width: 100%; position: relative; }
+        body { font-family: var(--font-body); font-size: var(--fs-md); background: linear-gradient(135deg, var(--c-bg-top) 0%, var(--c-bg-mid) 50%, var(--c-bg-bottom) 100%); min-height: 100vh; min-height: 100dvh; display: flex; justify-content: center; align-items: flex-start; padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        .game-container { background: linear-gradient(180deg, var(--c-shell-top) 0%, var(--c-shell-bottom) 100%); border-radius: var(--r-xl); padding: clamp(16px, 3.2vw, 30px); box-shadow: var(--shadow-3), 0 0 0 8px var(--c-ring-gold), 0 0 0 16px var(--c-ring-flame); max-width: 1120px; width: 100%; margin: auto; position: relative; display: grid; gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); grid-template-areas: "header" "level" "progress" "score" "settings" "problem" "history"; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .header { text-align: center; margin-bottom: 25px; }
+        .header { grid-area: header; text-align: center; margin-bottom: 0; }
         .title { font-family: var(--font-display); font-size: var(--fs-2xl); line-height: 1.15; color: var(--c-ink-invert); text-shadow: 3px 3px 0 var(--c-accent), 6px 6px 0 var(--c-gold); margin-bottom: 10px; }
-        .stats-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .stats-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 0; }
         .streak-badge, .timer-display { background: var(--grad-accent); padding: 10px 25px; border-radius: 20px; font-family: var(--font-display); color: var(--c-ink-invert); font-size: var(--fs-lg); }
         .timer-display { background: var(--grad-primary); }
-        .progress-bar { width: 100%; height: 20px; background: var(--c-surface-3); border-radius: 10px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        .progress-bar { grid-area: progress; width: 100%; height: 20px; background: var(--c-surface-3); border-radius: 10px; margin-bottom: 0; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #00ff88, var(--c-primary)); border-radius: 10px; transition: width 0.3s ease; }
-        .level-info { text-align: center; margin-bottom: 15px; font-family: var(--font-display); color: var(--c-ink-invert); font-size: var(--fs-lg); }
-        .score-board { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-        .score-item { background: var(--grad-gold); padding: 15px 30px; border-radius: 20px; box-shadow: 0 6px 0 var(--c-gold-deep), var(--shadow-2); text-align: center; transform: rotate(-2deg); flex-shrink: 0; }
+        .level-info { grid-area: level; text-align: center; margin-bottom: 0; font-family: var(--font-display); color: var(--c-ink-invert); font-size: var(--fs-lg); }
+        .score-board { grid-area: score; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); margin-bottom: 0; }
+        .score-item { background: var(--grad-gold); padding: 15px clamp(8px, 2vw, 30px); border-radius: 20px; box-shadow: 0 6px 0 var(--c-gold-deep), var(--shadow-2); text-align: center; transform: rotate(-2deg); min-width: 0; }
         .score-item:last-child { transform: rotate(2deg); }
         .score-label { font-size: var(--fs-sm); color: var(--c-gold-ink); font-weight: 700; }
         .score-value { font-family: var(--font-display); font-size: var(--fs-score); line-height: 1.1; color: var(--c-ink-invert); text-shadow: 2px 2px 0 var(--c-gold-deep); overflow-wrap: anywhere; }
-        .settings { background: var(--c-panel); padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .settings { grid-area: settings; background: var(--c-panel); padding: 20px; border-radius: 20px; margin-bottom: 0; }
         .setting-row { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 15px; }
+        .setting-row:last-child { margin-bottom: 0; }
         .setting-label { font-weight: 700; color: var(--c-ink); display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; font-size: var(--fs-md); }
         .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .btn { padding: 12px 24px; border: none; border-radius: 15px; font-family: var(--font-display); font-size: var(--fs-md); cursor: pointer; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
@@ -184,7 +185,7 @@
         .btn-random { background: var(--grad-pink); color: var(--c-ink-invert); }
         .btn-game { background: var(--grad-accent); color: var(--c-ink-invert); font-size: var(--fs-lg); padding: 18px 40px; }
         .btn.active { box-shadow: 0 0 0 4px var(--c-ink-invert), 0 5px 0 rgba(0,0,0,0.2); transform: scale(1.05); }
-        .problem-area { background: linear-gradient(180deg, var(--c-surface), var(--c-surface-2)); border-radius: 25px; padding: clamp(16px, 4vw, 30px); margin-bottom: 20px; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); min-width: 0; }
+        .problem-area { grid-area: problem; display: flex; flex-direction: column; justify-content: center; gap: var(--sp-4); background: linear-gradient(180deg, var(--c-surface), var(--c-surface-2)); border-radius: 25px; padding: clamp(16px, 4vw, 30px); margin-bottom: 0; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); min-width: 0; }
         .problem-number { font-family: var(--font-display); font-size: var(--fs-problem); line-height: 1.2; color: var(--c-ink); text-align: center; margin-bottom: 20px; overflow-wrap: anywhere; min-width: 0; }
         .input-area { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; }
         .input-box { width: clamp(120px, 30vw, 190px); height: clamp(56px, 9vw, 74px); font-family: var(--font-display); font-size: var(--fs-xl); text-align: center; border: 4px solid var(--c-primary); border-radius: 15px; background: var(--c-surface); color: var(--c-ink); transition: border-color 0.2s ease, background-color 0.2s ease; flex-shrink: 0; min-width: 0; }
@@ -197,9 +198,9 @@
         .hint-area { background: var(--grad-purple); border-radius: 20px; padding: 20px; margin-top: 20px; display: none; }
         .hint-title { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--c-ink-invert); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .hint-content { background: var(--c-panel); padding: 15px; border-radius: 15px; color: var(--c-ink); line-height: 1.8; font-size: var(--fs-md); }
-        .history-section { background: var(--c-panel); border-radius: 20px; padding: 20px; margin-top: 20px; }
+        .history-section { grid-area: history; background: var(--c-panel); border-radius: 20px; padding: 20px; margin-top: 0; }
         .history-title { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--c-ink); margin-bottom: 15px; text-align: center; }
-        .history-list { max-height: 200px; overflow-y: auto; }
+        .history-list { max-height: 200px; overflow-y: auto; overflow-x: hidden; }
         .history-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 15px; background: linear-gradient(180deg, var(--c-surface-2), var(--c-surface-3)); border-radius: 12px; margin-bottom: 8px; font-family: var(--font-body); font-size: var(--fs-sm); }
         .history-item:nth-child(odd) { background: linear-gradient(180deg, var(--c-tint-blue-1), var(--c-tint-blue-2)); }
         .history-score { font-family: var(--font-display); color: var(--c-accent); font-size: var(--fs-md); }
@@ -215,6 +216,26 @@
         .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1500; display: none; }
         .star { position: absolute; font-size: 3rem; animation: starBurst 1s ease forwards; }
         @keyframes starBurst { 0% { transform: scale(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.5) rotate(180deg); opacity: 0; } }
+
+        /* ==========================================================
+           13. 響應式版面：桌面闊屏採用兩欄（題目 / 側欄）
+           ========================================================== */
+        @media (min-width: 1024px) {
+            .game-container {
+                grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+                grid-template-areas:
+                    "header   header"
+                    "problem  level"
+                    "problem  progress"
+                    "problem  score"
+                    "problem  settings"
+                    "history  history";
+                gap: var(--sp-5);
+            }
+            .score-board { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
+            .history-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--sp-2); align-content: start; max-height: 300px; }
+            .history-item { margin-bottom: 0; }
+        }
     </style>
 </head>
 <body>
