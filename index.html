@@ -178,18 +178,22 @@
         .setting-row:last-child { margin-bottom: 0; }
         .setting-label { font-weight: 700; color: var(--c-ink); display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; font-size: var(--fs-md); }
         .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 12px 24px; border: none; border-radius: 15px; font-family: var(--font-display); font-size: var(--fs-md); cursor: pointer; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+        .btn { min-height: var(--tap); min-width: var(--tap); padding: 12px clamp(14px, 2.4vw, 24px); border: none; border-radius: 15px; font-family: var(--font-display); font-size: var(--fs-md); color: var(--c-ink-invert); cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease; box-shadow: 0 5px 0 rgba(0,0,0,0.2); -webkit-tap-highlight-color: transparent; }
+        .btn:hover { filter: brightness(1.07); }
+        .btn:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 3px; }
+        .btn:disabled, .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: 0 2px 0 rgba(0,0,0,0.18); filter: grayscale(0.35); }
+        .btn.active { box-shadow: 0 0 0 3px var(--c-ink), 0 5px 0 rgba(0,0,0,0.2); transform: scale(1.04); }
         .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
         .btn-primary { background: var(--grad-primary); color: var(--c-ink-invert); }
         .btn-success { background: var(--grad-success); color: var(--c-ink-invert); }
         .btn-random { background: var(--grad-pink); color: var(--c-ink-invert); }
-        .btn-game { background: var(--grad-accent); color: var(--c-ink-invert); font-size: var(--fs-lg); padding: 18px 40px; }
-        .btn.active { box-shadow: 0 0 0 4px var(--c-ink-invert), 0 5px 0 rgba(0,0,0,0.2); transform: scale(1.05); }
+        .btn-game { background: var(--grad-accent); color: var(--c-ink-invert); font-size: var(--fs-lg); padding: 16px clamp(24px, 4vw, 40px); min-height: 56px; }
         .problem-area { grid-area: problem; display: flex; flex-direction: column; justify-content: center; gap: var(--sp-4); background: linear-gradient(180deg, var(--c-surface), var(--c-surface-2)); border-radius: 25px; padding: clamp(16px, 4vw, 30px); margin-bottom: 0; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); min-width: 0; }
         .problem-number { font-family: var(--font-display); font-size: var(--fs-problem); line-height: 1.2; color: var(--c-ink); text-align: center; margin-bottom: 20px; overflow-wrap: anywhere; min-width: 0; }
         .input-area { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; }
-        .input-box { width: clamp(120px, 30vw, 190px); height: clamp(56px, 9vw, 74px); font-family: var(--font-display); font-size: var(--fs-xl); text-align: center; border: 4px solid var(--c-primary); border-radius: 15px; background: var(--c-surface); color: var(--c-ink); transition: border-color 0.2s ease, background-color 0.2s ease; flex-shrink: 0; min-width: 0; }
-        .input-box:focus { outline: none; border-color: var(--c-accent); box-shadow: 0 0 20px rgba(255,107,53,0.3); }
+        .input-box { width: clamp(120px, 30vw, 190px); height: clamp(56px, 9vw, 74px); min-height: var(--tap); font-family: var(--font-display); font-size: var(--fs-xl); text-align: center; border: 4px solid var(--c-primary); border-radius: 15px; background: var(--c-surface); color: var(--c-ink); transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease; flex-shrink: 0; min-width: 0; }
+        .input-box:focus { outline: none; border-color: var(--c-accent); box-shadow: 0 0 0 4px rgba(255,107,53,0.25); }
+        .input-box:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 3px; }
         .input-box.correct { border-color: var(--c-success); background: var(--c-success-soft); }
         .input-box.wrong { border-color: var(--c-danger); background: var(--c-danger-soft); }
         .input-box.warning { border-color: var(--c-warning); background: var(--c-warning-soft); animation: shake 0.5s ease; }
@@ -216,6 +220,20 @@
         .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1500; display: none; }
         .star { position: absolute; font-size: 3rem; animation: starBurst 1s ease forwards; }
         @keyframes starBurst { 0% { transform: scale(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.5) rotate(180deg); opacity: 0; } }
+
+        /* ==========================================================
+           14. 動效偏好：使用者要求減少動效時停止裝飾動畫
+           ========================================================== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .particle, .confetti, .star { display: none !important; }
+            .level-up { animation: none !important; }
+        }
 
         /* ==========================================================
            13. 響應式版面：桌面闊屏採用兩欄（題目 / 側欄）
