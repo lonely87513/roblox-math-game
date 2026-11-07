@@ -341,7 +341,7 @@
     </div>
     <div class="level-up" id="levelUp" style="display: none;">⬆️ 升級！</div>
     <script>
-        let gameState = { digit: 4, inputType: 'result', score: 0, correct: 0, wrong: 0, streak: 0, xp: 0, level: 1, currentProblem: null, startTime: null, timerInterval: null, history: [] };
+        let gameState = { digit: 4, inputType: 'result', score: 0, correct: 0, wrong: 0, streak: 0, xp: 0, level: 1, currentProblem: null, startTime: null, timerInterval: null, history: [], answerLocked: false };
         
         const sounds = { correct: null, wrong: null, click: null, levelUp: null, streak: null, warning: null };
         
@@ -423,6 +423,7 @@
             if (gameState.timerInterval) clearInterval(gameState.timerInterval);
             gameState.timerInterval = setInterval(updateTimer, 1000);
             document.getElementById('problemArea').style.display = 'block';
+            unlockAnswer();
             sounds.click && sounds.click();
             generateProblem();
         }
@@ -472,6 +473,7 @@
             document.getElementById('hintArea').style.display = 'none';
             document.getElementById('answer').value = '';
             document.getElementById('answer').focus();
+            unlockAnswer();
         }
         
         function displayProblem() {
@@ -514,6 +516,7 @@
         function handleKeypad(key) {
             if (!key) return;
             if (key === 'enter') { checkAnswer(); return; }
+            if (gameState.answerLocked) return;
             const box = document.getElementById('answer');
             if (!box) return;
             if (key === 'backspace') {
@@ -533,7 +536,18 @@
             box.focus({ preventScroll: true });
         }
         
+        function lockAnswer() {
+            gameState.answerLocked = true;
+            document.querySelectorAll('#problemArea .btn, #problemArea .key').forEach(el => { el.disabled = true; });
+        }
+
+        function unlockAnswer() {
+            gameState.answerLocked = false;
+            document.querySelectorAll('#problemArea .btn, #problemArea .key').forEach(el => { el.disabled = false; });
+        }
+
         function checkAnswer() {
+            if (gameState.answerLocked) return;
             const val = document.getElementById('answer').value.trim();
             const box = document.getElementById('answer');
             if (!val) {
@@ -558,15 +572,17 @@
                     showLevelUp(); sounds.levelUp && sounds.levelUp(); createStarBurst();
                 }
                 if (gameState.streak >= 3) sounds.streak && sounds.streak();
-                setTimeout(() => { box.classList.remove('correct'); generateProblem(); }, 1000);
+                lockAnswer();
+                setTimeout(() => { box.classList.remove('correct'); unlockAnswer(); generateProblem(); }, 1000);
             } else {
                 box.classList.add('wrong');
                 sounds.wrong && sounds.wrong();
                 gameState.wrong++; gameState.streak = 0;
                 createParticles('❌');
-                updateDisplay();
+                lockAnswer();
                 setTimeout(() => {
                     box.classList.remove('wrong');
+                    unlockAnswer();
                     generateProblem();
                 }, 800);
             }
