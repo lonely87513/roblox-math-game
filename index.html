@@ -6,61 +6,200 @@
     <title>🎮 Roblox 數學大冒險</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* ==========================================================
+           1. 設計語彙（Design Tokens）
+           所有顏色、圓角、陰影、間距集中管理，方便日後統一調整
+           ========================================================== */
+        :root {
+            --font-display: 'Fredoka One', 'Comic Sans MS', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+
+            /* 背景與外殼 */
+            --c-bg-top: #1a1a2e;
+            --c-bg-mid: #16213e;
+            --c-bg-bottom: #0f3460;
+            --c-shell-top: #00d4ff;
+            --c-shell-bottom: #0099cc;
+            --c-ring-gold: #ffd700;
+            --c-ring-flame: #ff6b35;
+
+            /* 表面 */
+            --c-surface: #ffffff;
+            --c-surface-2: #f2f5fa;
+            --c-surface-3: #e2e8f2;
+            --c-panel: rgba(255, 255, 255, 0.96);
+            --c-tint-blue-1: #f0f8ff;
+            --c-tint-blue-2: #e0f0ff;
+
+            /* 文字 */
+            --c-ink: #1d2333;
+            --c-ink-soft: #5b6478;
+            --c-ink-invert: #ffffff;
+            --c-gold-ink: #5a3d00;
+
+            /* 主色與狀態色 */
+            --c-primary: #00c2f2;
+            --c-primary-deep: #0099cc;
+            --c-accent: #ff6b35;
+            --c-accent-deep: #dd5525;
+            --c-gold: #ffd700;
+            --c-gold-deep: #cc8800;
+            --c-success: #00e58a;
+            --c-success-deep: #00b866;
+            --c-success-soft: #e2fff2;
+            --c-danger: #ff6b6b;
+            --c-danger-soft: #ffecec;
+            --c-warning: #ffc93c;
+            --c-warning-deep: #e0a800;
+            --c-warning-soft: #fff8e2;
+            --c-purple: #a855f7;
+            --c-purple-deep: #7c3aed;
+            --c-pink: #ff69b4;
+            --c-pink-deep: #ff1493;
+            --c-focus: #12284a;
+
+            /* 漸層 */
+            --grad-primary: linear-gradient(180deg, var(--c-primary), var(--c-primary-deep));
+            --grad-accent: linear-gradient(180deg, var(--c-accent), var(--c-accent-deep));
+            --grad-success: linear-gradient(180deg, var(--c-success), var(--c-success-deep));
+            --grad-gold: linear-gradient(180deg, var(--c-gold), #ffaa00);
+            --grad-purple: linear-gradient(180deg, var(--c-purple), var(--c-purple-deep));
+            --grad-pink: linear-gradient(180deg, var(--c-pink), var(--c-pink-deep));
+
+            /* 圓角 */
+            --r-sm: 12px;
+            --r-md: 16px;
+            --r-lg: 22px;
+            --r-xl: 30px;
+            --r-pill: 999px;
+
+            /* 陰影 */
+            --shadow-1: 0 4px 10px rgba(9, 20, 45, 0.18);
+            --shadow-2: 0 8px 20px rgba(9, 20, 45, 0.24);
+            --shadow-3: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+            /* 間距與觸控尺寸 */
+            --sp-1: 4px;
+            --sp-2: 8px;
+            --sp-3: 12px;
+            --sp-4: 16px;
+            --sp-5: 24px;
+            --sp-6: 32px;
+            --tap: 44px;
+        }
+
+        /* 深色模式：沿用同一組 token，只覆寫數值 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --c-bg-top: #070c1b;
+                --c-bg-mid: #101a33;
+                --c-bg-bottom: #09193c;
+                --c-shell-top: #17456f;
+                --c-shell-bottom: #0e2c4d;
+                --c-ring-gold: #2a4a7a;
+                --c-ring-flame: #143a63;
+
+                --c-surface: #16203a;
+                --c-surface-2: #1c2846;
+                --c-surface-3: #27355c;
+                --c-panel: rgba(18, 27, 51, 0.94);
+                --c-tint-blue-1: #1a2942;
+                --c-tint-blue-2: #16223a;
+
+                --c-ink: #eef3ff;
+                --c-ink-soft: #a9b6d4;
+                --c-ink-invert: #ffffff;
+
+                --c-primary: #38d6ff;
+                --c-primary-deep: #0aa8d6;
+                --c-accent: #ff8f63;
+                --c-accent-deep: #e2602f;
+                --c-success: #2ee79b;
+                --c-success-deep: #12a866;
+                --c-success-soft: #103a2c;
+                --c-danger: #ff8f8f;
+                --c-danger-soft: #3a1d22;
+                --c-warning: #ffd75e;
+                --c-warning-deep: #d9a200;
+                --c-warning-soft: #3a3116;
+                --c-purple: #c08bff;
+                --c-purple-deep: #8b4fe0;
+                --c-pink: #ff8fc4;
+                --c-pink-deep: #e04a94;
+                --c-focus: #7fd8ff;
+
+                --grad-primary: linear-gradient(180deg, #1b7fae, #0d5578);
+                --grad-accent: linear-gradient(180deg, #e2602f, #b0431a);
+                --grad-success: linear-gradient(180deg, #17b877, #0a8c55);
+                --grad-gold: linear-gradient(180deg, #e8b400, #b98200);
+                --grad-purple: linear-gradient(180deg, #8b4fe0, #5f2fbd);
+                --grad-pink: linear-gradient(180deg, #d8559a, #a82a6b);
+
+                --shadow-1: 0 4px 10px rgba(0, 0, 0, 0.45);
+                --shadow-2: 0 8px 20px rgba(0, 0, 0, 0.5);
+                --shadow-3: 0 20px 60px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        /* ==========================================================
+           2. 基礎樣式
+           ========================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: hidden; }
-        .game-container { background: linear-gradient(180deg, #00d4ff 0%, #0099cc 100%); border-radius: 30px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 8px #ffd700, 0 0 0 16px #ff6b35; max-width: 700px; width: 100%; position: relative; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { font-family: var(--font-body); background: linear-gradient(135deg, var(--c-bg-top) 0%, var(--c-bg-mid) 50%, var(--c-bg-bottom) 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        .game-container { background: linear-gradient(180deg, var(--c-shell-top) 0%, var(--c-shell-bottom) 100%); border-radius: var(--r-xl); padding: 30px; box-shadow: var(--shadow-3), 0 0 0 8px var(--c-ring-gold), 0 0 0 16px var(--c-ring-flame); max-width: 700px; width: 100%; position: relative; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .header { text-align: center; margin-bottom: 25px; }
-        .title { font-family: 'Fredoka One', cursive; font-size: 2.5em; color: #fff; text-shadow: 3px 3px 0 #ff6b35, 6px 6px 0 #ffd700; margin-bottom: 10px; }
+        .title { font-family: var(--font-display); font-size: 2.5em; color: var(--c-ink-invert); text-shadow: 3px 3px 0 var(--c-accent), 6px 6px 0 var(--c-gold); margin-bottom: 10px; }
         .stats-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-        .streak-badge, .timer-display { background: linear-gradient(180deg, #ff6b35, #dd5525); padding: 10px 25px; border-radius: 20px; font-family: 'Fredoka One', cursive; color: #fff; font-size: 1.2em; }
-        .timer-display { background: linear-gradient(180deg, #00d4ff, #0099cc); }
-        .progress-bar { width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00ff88, #00d4ff); border-radius: 10px; transition: width 0.3s ease; }
-        .level-info { text-align: center; margin-bottom: 15px; font-family: 'Fredoka One', cursive; color: #fff; font-size: 1.2em; }
+        .streak-badge, .timer-display { background: var(--grad-accent); padding: 10px 25px; border-radius: 20px; font-family: var(--font-display); color: var(--c-ink-invert); font-size: 1.2em; }
+        .timer-display { background: var(--grad-primary); }
+        .progress-bar { width: 100%; height: 20px; background: var(--c-surface-3); border-radius: 10px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00ff88, var(--c-primary)); border-radius: 10px; transition: width 0.3s ease; }
+        .level-info { text-align: center; margin-bottom: 15px; font-family: var(--font-display); color: var(--c-ink-invert); font-size: 1.2em; }
         .score-board { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-        .score-item { background: linear-gradient(180deg, #ffd700, #ffaa00); padding: 15px 30px; border-radius: 20px; box-shadow: 0 6px 0 #cc8800, 0 10px 20px rgba(0,0,0,0.3); text-align: center; transform: rotate(-2deg); flex-shrink: 0; }
+        .score-item { background: var(--grad-gold); padding: 15px 30px; border-radius: 20px; box-shadow: 0 6px 0 var(--c-gold-deep), var(--shadow-2); text-align: center; transform: rotate(-2deg); flex-shrink: 0; }
         .score-item:last-child { transform: rotate(2deg); }
-        .score-label { font-size: 0.9em; color: #664400; font-weight: 700; }
-        .score-value { font-family: 'Fredoka One', cursive; font-size: 2em; color: #fff; text-shadow: 2px 2px 0 #cc8800; }
-        .settings { background: rgba(255,255,255,0.95); padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .score-label { font-size: 0.9em; color: var(--c-gold-ink); font-weight: 700; }
+        .score-value { font-family: var(--font-display); font-size: 2em; color: var(--c-ink-invert); text-shadow: 2px 2px 0 var(--c-gold-deep); }
+        .settings { background: var(--c-panel); padding: 20px; border-radius: 20px; margin-bottom: 20px; }
         .setting-row { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-bottom: 15px; }
-        .setting-label { font-weight: 700; color: #333; display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
+        .setting-label { font-weight: 700; color: var(--c-ink); display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; }
         .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .btn { padding: 12px 24px; border: none; border-radius: 15px; font-family: 'Fredoka One', cursive; font-size: 1em; cursor: pointer; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+        .btn { padding: 12px 24px; border: none; border-radius: 15px; font-family: var(--font-display); font-size: 1em; cursor: pointer; transition: all 0.2s; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
         .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-        .btn-primary { background: linear-gradient(180deg, #00d4ff, #0099cc); color: #fff; }
-        .btn-success { background: linear-gradient(180deg, #00ff88, #00cc66); color: #fff; }
-        .btn-random { background: linear-gradient(180deg, #ff69b4, #ff1493); color: #fff; }
-        .btn-game { background: linear-gradient(180deg, #ff6b35, #dd5525); color: #fff; font-size: 1.3em; padding: 18px 40px; }
-        .btn.active { box-shadow: 0 0 0 4px #fff, 0 5px 0 rgba(0,0,0,0.2); transform: scale(1.05); }
-        .problem-area { background: linear-gradient(180deg, #f8f8f8, #e8e8e8); border-radius: 25px; padding: 30px; margin-bottom: 20px; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); }
-        .problem-number { font-family: 'Fredoka One', cursive; font-size: 3em; color: #333; text-align: center; margin-bottom: 20px; }
+        .btn-primary { background: var(--grad-primary); color: var(--c-ink-invert); }
+        .btn-success { background: var(--grad-success); color: var(--c-ink-invert); }
+        .btn-random { background: var(--grad-pink); color: var(--c-ink-invert); }
+        .btn-game { background: var(--grad-accent); color: var(--c-ink-invert); font-size: 1.3em; padding: 18px 40px; }
+        .btn.active { box-shadow: 0 0 0 4px var(--c-ink-invert), 0 5px 0 rgba(0,0,0,0.2); transform: scale(1.05); }
+        .problem-area { background: linear-gradient(180deg, var(--c-surface), var(--c-surface-2)); border-radius: 25px; padding: 30px; margin-bottom: 20px; box-shadow: inset 0 5px 15px rgba(0,0,0,0.1); }
+        .problem-number { font-family: var(--font-display); font-size: 3em; color: var(--c-ink); text-align: center; margin-bottom: 20px; }
         .input-area { display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap; }
-        .input-box { width: 150px; height: 70px; font-family: 'Fredoka One', cursive; font-size: 2em; text-align: center; border: 4px solid #00d4ff; border-radius: 15px; background: #fff; color: #333; transition: border-color 0.2s ease, background-color 0.2s ease; flex-shrink: 0; }
-        .input-box:focus { outline: none; border-color: #ff6b35; box-shadow: 0 0 20px rgba(255,107,53,0.3); }
-        .input-box.correct { border-color: #00ff88; background: #e8fff5; }
-        .input-box.wrong { border-color: #ff6b6b; background: #fff0f0; }
-        .input-box.warning { border-color: #ffd700; background: #fffef0; animation: shake 0.5s ease; }
+        .input-box { width: 150px; height: 70px; font-family: var(--font-display); font-size: 2em; text-align: center; border: 4px solid var(--c-primary); border-radius: 15px; background: var(--c-surface); color: var(--c-ink); transition: border-color 0.2s ease, background-color 0.2s ease; flex-shrink: 0; }
+        .input-box:focus { outline: none; border-color: var(--c-accent); box-shadow: 0 0 20px rgba(255,107,53,0.3); }
+        .input-box.correct { border-color: var(--c-success); background: var(--c-success-soft); }
+        .input-box.wrong { border-color: var(--c-danger); background: var(--c-danger-soft); }
+        .input-box.warning { border-color: var(--c-warning); background: var(--c-warning-soft); animation: shake 0.5s ease; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        .btn-hint { background: linear-gradient(180deg, #a855f7, #7c3aed); color: #fff; }
-        .hint-area { background: linear-gradient(180deg, #a855f7, #7c3aed); border-radius: 20px; padding: 20px; margin-top: 20px; display: none; }
-        .hint-title { font-family: 'Fredoka One', cursive; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .hint-content { background: rgba(255,255,255,0.95); padding: 15px; border-radius: 15px; color: #333; line-height: 1.8; }
-        .history-section { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 20px; margin-top: 20px; }
-        .history-title { font-family: 'Fredoka One', cursive; color: #333; margin-bottom: 15px; text-align: center; }
+        .btn-hint { background: var(--grad-purple); color: var(--c-ink-invert); }
+        .hint-area { background: var(--grad-purple); border-radius: 20px; padding: 20px; margin-top: 20px; display: none; }
+        .hint-title { font-family: var(--font-display); color: var(--c-ink-invert); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .hint-content { background: var(--c-panel); padding: 15px; border-radius: 15px; color: var(--c-ink); line-height: 1.8; }
+        .history-section { background: var(--c-panel); border-radius: 20px; padding: 20px; margin-top: 20px; }
+        .history-title { font-family: var(--font-display); color: var(--c-ink); margin-bottom: 15px; text-align: center; }
         .history-list { max-height: 200px; overflow-y: auto; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: linear-gradient(180deg, #f8f8f8, #f0f0f0); border-radius: 12px; margin-bottom: 8px; font-family: 'Nunito', sans-serif; }
-        .history-item:nth-child(odd) { background: linear-gradient(180deg, #f0f8ff, #e0f0ff); }
-        .history-score { font-family: 'Fredoka One', cursive; color: #ff6b35; font-size: 1.1em; }
-        .history-time { color: #666; font-size: 0.9em; }
-        .no-history { text-align: center; color: #999; padding: 20px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: linear-gradient(180deg, var(--c-surface-2), var(--c-surface-3)); border-radius: 12px; margin-bottom: 8px; font-family: var(--font-body); }
+        .history-item:nth-child(odd) { background: linear-gradient(180deg, var(--c-tint-blue-1), var(--c-tint-blue-2)); }
+        .history-score { font-family: var(--font-display); color: var(--c-accent); font-size: 1.1em; }
+        .history-time { color: var(--c-ink-soft); font-size: 0.9em; }
+        .no-history { text-align: center; color: var(--c-ink-soft); padding: 20px; }
         .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 1000; }
         .particle { position: absolute; font-size: 2em; animation: fall 3s linear forwards; opacity: 0; }
         @keyframes fall { 0% { opacity: 1; transform: translateY(-50px) rotate(0deg); } 100% { opacity: 0; transform: translateY(100vh) rotate(360deg); } }
-        .confetti { width: 15px; height: 15px; background: #ffd700; animation: confettiFall 2s linear forwards; }
+        .confetti { width: 15px; height: 15px; background: var(--c-gold); animation: confettiFall 2s linear forwards; }
         @keyframes confettiFall { 0% { transform: translateY(-50px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        .level-up { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Fredoka One', cursive; font-size: 4em; color: #ffd700; text-shadow: 4px 4px 0 #ff6b35, 8px 8px 0 #ff0000; animation: levelUp 2s ease forwards; z-index: 2000; pointer-events: none; }
+        .level-up { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: 4em; color: var(--c-gold); text-shadow: 4px 4px 0 var(--c-accent), 8px 8px 0 #ff0000; animation: levelUp 2s ease forwards; z-index: 2000; pointer-events: none; }
         @keyframes levelUp { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); } }
         .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1500; display: none; }
         .star { position: absolute; font-size: 3em; animation: starBurst 1s ease forwards; }
