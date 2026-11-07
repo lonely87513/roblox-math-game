@@ -344,11 +344,34 @@
         let gameState = { digit: 4, inputType: 'result', score: 0, correct: 0, wrong: 0, streak: 0, xp: 0, level: 1, currentProblem: null, startTime: null, timerInterval: null, history: [], answerLocked: false };
         
         const sounds = { correct: null, wrong: null, click: null, levelUp: null, streak: null, warning: null };
+        let audioCtx = null;
+        
+        // 瀏覽器的自動播放政策要求 AudioContext 在使用者互動後建立或恢復
+        function getAudioCtx() {
+            if (!audioCtx) {
+                const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextCtor) return null;
+                try {
+                    audioCtx = new AudioContextCtor();
+                } catch (err) {
+                    return null;
+                }
+            }
+            if (audioCtx.state === 'suspended') {
+                try {
+                    const resuming = audioCtx.resume();
+                    if (resuming && resuming.catch) resuming.catch(() => {});
+                } catch (err) {
+                    // 瀏覽器仍未允許播放，靜音運作
+                }
+            }
+            return audioCtx;
+        }
         
         function initAudio() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            const ctx = new AudioContext();
             sounds.correct = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
                 const osc = ctx.createOscillator(), gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.setValueAtTime(523.25, ctx.currentTime);
@@ -359,6 +382,8 @@
                 osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
             };
             sounds.wrong = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
                 const osc = ctx.createOscillator(), gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.type = 'sawtooth';
@@ -369,6 +394,8 @@
                 osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
             };
             sounds.warning = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
                 const osc = ctx.createOscillator(), gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.setValueAtTime(440, ctx.currentTime);
@@ -379,6 +406,8 @@
                 osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
             };
             sounds.click = () => {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
                 const osc = ctx.createOscillator(), gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.setValueAtTime(800, ctx.currentTime);
@@ -387,6 +416,11 @@
                 osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
             };
         }
+        
+        // 第一次使用者互動時啟用音訊，之後每次互動都嘗試恢復被暫停的 AudioContext
+        ['pointerdown', 'touchstart', 'keydown'].forEach(evt => {
+            window.addEventListener(evt, () => { getAudioCtx(); }, { passive: true });
+        });
         
         document.getElementById('digitBtns').addEventListener('click', e => {
             if (e.target.classList.contains('btn')) {
